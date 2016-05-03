@@ -765,6 +765,34 @@ Grid.prototype.getCurrentRows = function()
 };
 
 /**
+ * Gets the rows.
+ * This method returns only for the first grid instance a value.
+ * Therefore be sure that only one grid instance is catched by your selector.
+ *
+ * @method getRows
+ * @return {Array} Returns all the rows.
+ * @since 1.2.0
+ **/
+Grid.prototype.getRows = function()
+{
+    return this.rows;
+};
+
+/**
+ * Gets the rows resulted form search.
+ * This method returns only for the first grid instance a value.
+ * Therefore be sure that only one grid instance is catched by your selector.
+ *
+ * @method getRows
+ * @return {Array} Returns all the rows.
+ * @since 1.2.0
+ **/
+Grid.prototype.getSearchResultRows = function()
+{
+    return (this.searchPhrase.length > 0) ? this.rows.where(containsPhrase(this)) : this.rows;
+};
+
+/**
  * Gets a number represents the row count per page.
  * This method returns only for the first grid instance a value.
  * Therefore be sure that only one grid instance is catched by your selector.

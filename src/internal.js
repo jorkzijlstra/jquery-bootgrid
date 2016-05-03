@@ -105,6 +105,31 @@ function isVisible(column)
     return column.visible;
 }
 
+function containsPhrase(grid)
+{
+    var searchPhrase = grid.searchPhrase;
+    var caseSensitive = grid.options.caseSensitive;
+    var columns = grid.columns;
+
+    return function (row)
+    {
+        var column,
+            searchPattern = new RegExp(searchPhrase, (caseSensitive) ? "g" : "gi");
+
+        for (var i = 0; i < columns.length; i++)
+        {
+            column = columns[i];
+            if (column.searchable && column.visible &&
+                column.converter.to(row[column.id]).search(searchPattern) > -1)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    };
+}
+
 function loadColumns()
 {
     var that = this,
@@ -173,24 +198,6 @@ function loadData()
     this.element._bgBusyAria(true).trigger("load" + namespace);
     showLoading.call(this);
 
-    function containsPhrase(row)
-    {
-        var column,
-            searchPattern = new RegExp(that.searchPhrase, (that.options.caseSensitive) ? "g" : "gi");
-
-        for (var i = 0; i < that.columns.length; i++)
-        {
-            column = that.columns[i];
-            if (column.searchable && column.visible &&
-                column.converter.to(row[column.id]).search(searchPattern) > -1)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     function update(rows, total)
     {
         that.currentRows = rows;
@@ -258,7 +265,7 @@ function loadData()
     }
     else
     {
-        var rows = (this.searchPhrase.length > 0) ? this.rows.where(containsPhrase) : this.rows,
+        var rows = (this.searchPhrase.length > 0) ? this.rows.where(containsPhrase(that)) : this.rows,
             total = rows.length;
         if (this.rowCount !== -1)
         {
